@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAMO</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f0f;
+      color: #f0f0f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    #btn {
+      font-size: 2.5rem;
+      font-weight: 900;
+      padding: 24px 48px;
+      background: #ffe94d;
+      color: #111;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      transition: transform 0.08s, background 0.1s;
+      user-select: none;
+    }
+
+    #btn:active {
+      transform: scale(0.93);
+      background: #ffd700;
+    }
+
+    #count {
+      font-size: 6rem;
+      font-weight: 900;
+      color: #ffe94d;
+      min-width: 80px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="btn" onclick="sumar()">tamo</button>
+  <div id="count">...</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+    import { getDatabase, ref, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBRRlqQEEh4l3F4ArQ3GnGWd1mEfq-Jgfo",
+      authDomain: "tamocounter.firebaseapp.com",
+      databaseURL: "https://tamocounter-default-rtdb.firebaseio.com",
+      projectId: "tamocounter",
+      storageBucket: "tamocounter.firebasestorage.app",
+      messagingSenderId: "391705699456",
+      appId: "1:391705699456:web:700834532f539861e23265",
+      measurementId: "G-5585ZJJWEM"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const countRef = ref(db, 'tamo');
+
+    // Escuchar cambios en tiempo real
+    onValue(countRef, (snapshot) => {
+      const val = snapshot.val() || 0;
+      document.getElementById('count').textContent = val;
+    });
+
+    // Exponer función al botón
+    window.sumar = () => {
+      runTransaction(countRef, (current) => (current || 0) + 1);
+    };
+  </script>
+
+</body>
+</html>
